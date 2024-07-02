@@ -1,9 +1,13 @@
 param (
     [Parameter(Mandatory=$true)]
-    [string]$Environment
+    [string]$Environment,
+    [Parameter(Mandatory=$true)]
+    [string]$ProjectName
 )
 
-$envDir = "environments\$Environment"
+$envDir = "$ProjectName\environments\$Environment"
+$commonSourceDir = "$ProjectName\common"
+$commonDestDir = "$envDir\common"
 $modulesSourceDir = "modules"
 $modulesDestDir = "$envDir\modules"
 
@@ -20,6 +24,7 @@ if (Test-Path -Path $modulesDestDir) {
 
 # Copy the modules directory to the environment directory
 Copy-Item -Recurse -Path $modulesSourceDir -Destination $modulesDestDir
+Copy-Item -Recurse -Path $commonSourceDir -Destination $commonDestDir
 
 # Change to the environment directory
 Set-Location -Path $envDir
@@ -30,5 +35,10 @@ terraform init
 # Apply Terraform configuration
 terraform apply -var-file="terraform.tfvars" -auto-approve
 
+
 # Reset the location to the root of the repository
-Set-Location -Path ../..
+Set-Location -Path ../../..
+
+#cleanup copied directories
+Remove-Item -Recurse -Force -Path $commonDestDir
+Remove-Item -Recurse -Force -Path $modulesDestDir

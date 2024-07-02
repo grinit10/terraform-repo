@@ -1,10 +1,12 @@
 param (
     [Parameter(Mandatory=$true)]
-    [string]$Environment
+    [string]$Environment,
+    [Parameter(Mandatory=$true)]
+    [string]$ProjectName
 )
 
-$envDir = "environments\$Environment"
-$commonSourceDir = "common"
+$envDir = "$ProjectName\environments\$Environment"
+$commonSourceDir = "$ProjectName\common"
 $commonDestDir = "$envDir\common"
 $modulesSourceDir = "modules"
 $modulesDestDir = "$envDir\modules"
@@ -33,8 +35,9 @@ terraform init
 # Plan Terraform configuration
 terraform plan -var-file="terraform.tfvars"
 
-Remove-Item -Recurse -Force -Path $commonSourceDir
-Remove-Item -Recurse -Force -Path $modulesSourceDir
-
 # Reset the location to the root of the repository
-Set-Location -Path ../..
+Set-Location -Path ../../..
+
+#cleanup copied directories
+Remove-Item -Recurse -Force -Path $commonDestDir
+Remove-Item -Recurse -Force -Path $modulesDestDir

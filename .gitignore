@@ -4,3 +4,5 @@
 
 /.vs
 /environments/dev/.terraform
+/project1/environments/dev/.terraform
+/project1/environments/prod/.terraform
