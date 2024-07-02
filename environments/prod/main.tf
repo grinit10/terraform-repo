@@ -4,7 +4,7 @@ terraform {
     organization = "Xxeleton"
 
     workspaces {
-      name = "dev"
+      name = "test-prod"
     }
   }
 }
@@ -19,7 +19,7 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
-module "dev" {
-  count = var.environment == "dev" ? 1 : 0
-  source = "./environments/dev"
+module "common" {
+    source = "./common"
+    environment = var.environment
 }
